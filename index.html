@@ -1,39 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aylon</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aylon — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif}
-body{height:100vh;background:black;overflow:hidden;display:flex;justify-content:center;align-items:center;color:white}
-.flash-bg{position:absolute;top:0;left:0;width:200%;height:200%;background:repeating-linear-gradient(45deg,black 0%,black 25%,silver 25%,silver 50%);animation:flash 2s linear forwards;z-index:1}
-@keyframes flash{0%{transform:translate(-50%,-50%) rotate(0deg);opacity:1}50%{transform:translate(-50%,-50%) rotate(45deg);opacity:1}100%{transform:translate(-50%,-50%) rotate(90deg);opacity:0}}
-.text-container{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;animation:showAylon 2s ease forwards;animation-delay:2s}
-@keyframes showAylon{0%{opacity:0;transform:scale(0.8)}50%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.2)}}
-.aylon-text{font-size:4rem;font-weight:bold;background:linear-gradient(90deg,#fff 60%,silver 50%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.menu-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:black;opacity:0;animation:showMenu 1s forwards;animation-delay:4s;overflow:hidden}
-@keyframes showMenu{0%{opacity:0}100%{opacity:1}}
-.stars{width:100%;height:100%;background:black;background-image:radial-gradient(white 1px, transparent 1px);background-size:20px 20px;animation:twinkle 3s infinite linear;position:absolute;top:0;left:0}
-@keyframes twinkle{0%,100%{opacity:0.8}50%{opacity:1}}
-.menu-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(30,30,50,0.85);border-radius:20px;padding:25px 60px;display:flex;gap:40px;animation:fadeIn 1s forwards;animation-delay:4.5s}
-@keyframes fadeIn{0%{opacity:0;transform:translate(-50%,-60%)}100%{opacity:1;transform:translate(-50%,-50%)}}
-.menu-box button{background:none;border:2px solid white;color:white;font-size:1.2rem;padding:10px 20px;border-radius:10px;cursor:pointer;transition:0.3s}
-.menu-box button:hover{background:white;color:black;transform:scale(1.05)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#040406;
+    --panel:rgba(18,20,30,0.78);
+    --accent:#bfbfc3;
+    --metal-left:#ffffff;
+    --metal-right:#bdbdbf;
+    --blur:12px;
+    --glass:rgba(255,255,255,0.04);
+  }
+  html,body{height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#e6e6ea;background:var(--bg);-webkit-font-smoothing:antialiased}
+  .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .flash{position:absolute;inset:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,#000 0 22%,silver 22% 44%);transform-origin:center;z-index:60}
+  .intro-wrap{position:relative;z-index:80;display:flex;flex-direction:column;align-items:center;gap:18px}
+  .name{
+    font-size:clamp(48px,8vw,96px);
+    font-weight:800;
+    letter-spacing:0.02em;
+    line-height:0.9;
+    background:linear-gradient(90deg,var(--metal-left) 0%,var(--metal-left) 45%,var(--metal-right) 46%,var(--metal-right) 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    transform-origin:center;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+    opacity:0;
+  }
+  .brand-sub{opacity:0;color:#cfd3d8;font-weight:400}
+  .stars-layer{position:fixed;inset:0;z-index:10;pointer-events:none}
+  .stars, .stars-2, .stars-3{
+    position:absolute;inset:0;background-repeat:repeat;mix-blend-mode:screen;opacity:0.9;
+  }
+  .stars{background-image:radial-gradient(#fff 0.9px, transparent 1px);background-size:18px 18px;filter:blur(.2px)}
+  .stars-2{background-image:radial-gradient(#dfe6ff 0.8px, transparent 1px);background-size:40px 40px;opacity:0.6;filter:blur(0.6px)}
+  .stars-3{background-image:radial-gradient(#9fb6ff 0.7px, transparent 1px);background-size:90px 90px;opacity:0.18;filter:blur(2px)}
+  header{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:90;width:100%;max-width:1200px;padding:0 24px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+  .nav{display:flex;gap:18px;pointer-events:auto}
+  .nav button{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#e9eef8;padding:10px 16px;border-radius:12px;font-weight:600;backdrop-filter:blur(6px);cursor:pointer;transition:transform .18s,background .18s;border-left:3px solid transparent}
+  .nav button:hover{transform:translateY(-3px);background:rgba(255,255,255,0.03)}
+  .nav button.active{border-left-color:var(--accent);background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))}
+  .logo{pointer-events:auto;background:linear-gradient(90deg,#fff,#bdbdbf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800}
+  main{position:relative;z-index:20;min-height:100vh;padding-top:120px}
+  section{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:80px 20px}
+  .panel{width:100%;max-width:980px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:28px;box-shadow:0 10px 40px rgba(0,0,0,0.6);backdrop-filter:blur(var(--blur));border:1px solid rgba(255,255,255,0.04)}
+  .about-title{font-size:24px;font-weight:700;margin-bottom:12px;color:#e9eef8}
+  .about-text{color:#c6cbd1;line-height:1.6}
+  .menu-banner{position:fixed;top:-70px;left:50%;transform:translateX(-50%);z-index:95;background:linear-gradient(90deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02));padding:8px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);font-weight:700;color:#fff;backdrop-filter:blur(8px)}
+  .menu-box{position:fixed;top:18px;right:24px;z-index:95;display:flex;gap:12px;align-items:center}
+  .menu-floating-button{background:var(--panel);padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);color:#eaf0ff;font-weight:600}
+  .contact-grid{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+  .contact-btn{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);color:#e7eefb;font-weight:600;cursor:pointer}
+  .contact-meta{color:#c7cbd1;font-size:14px;margin-top:8px}
+  .work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+  .card{background:var(--glass);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);color:#e6eaf2}
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.65));z-index:200}
+  .modal.show{display:flex}
+  .modal-card{background:#0e1220;padding:22px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);width:min(480px,92%);color:#e9eef8}
+  .modal-close{position:absolute;top:18px;right:18px;background:transparent;border:none;color:#e9eef8;font-size:20px;cursor:pointer}
+  @media (max-width:720px){
+    .nav{gap:10px}
+    .menu-box{display:none}
+    .name{font-size:42px}
+    .panel{padding:18px}
+  }
 </style>
 </head>
 <body>
-<div class="flash-bg"></div>
-<div class="text-container">
-<div class="aylon-text">Aylon</div>
+<div class="stage">
+  <div class="flash" id="flash"></div>
+  <div class="intro-wrap" id="intro">
+    <div class="name" id="name">Aylon</div>
+    <div class="brand-sub" id="sub">developer · communicator · creator</div>
+  </div>
+  <div class="stars-layer" aria-hidden="true">
+    <div class="stars" id="s1"></div>
+    <div class="stars-2" id="s2"></div>
+    <div class="stars-3" id="s3"></div>
+  </div>
 </div>
-<div class="menu-bg">
-<div class="stars"></div>
+
+<header>
+  <div class="logo">Aylon</div>
+  <nav class="nav" id="nav">
+    <button data-target="about">About Me</button>
+    <button data-target="contact">Contact Me</button>
+    <button data-target="work">My Work</button>
+  </nav>
+</header>
+
+<div class="menu-banner" id="topBanner">About Me</div>
 <div class="menu-box">
-<button>About Me</button>
-<button>Contact Me</button>
-<button>My Work</button>
+  <div class="menu-floating-button">Portfolio</div>
 </div>
+
+<main>
+  <section id="hero" aria-label="hero" style="display:flex;align-items:center;justify-content:center">
+    <div style="max-width:900px;text-align:center">
+      <div style="height:8px"></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="panel">
+      <div class="about-title">About Me</div>
+      <div class="about-text" id="aboutText">I am Aylon, a LuaU Developer who loves to code. I am a professional in talking and communicating. I have been on Discord and Roblox since 2022 and since then I have acquired many skills. I have been moderating different communities and now I just code and relax.</div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="panel">
+      <div class="about-title">Contact Me</div>
+      <div class="contact-grid" id="contactGrid" style="opacity:0;transform:translateY(16px)">
+        <button class="contact-btn" id="discordBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.6 13.2c-.8 0-1.4-.7-1.4-1.4s.7-1.3 1.4-1.3c.8 0 1.4.6 1.4 1.3s-.7 1.4-1.4 1.4zm8.2 0c-.8 0-1.4-.7-1.4-1.4s.6-1.3 1.4-1.3c.7 0 1.4.6 1.4 1.3s-.6 1.4-1.4 1.4z" fill="#dfe7ff"/><path d="M21 4.5s-1.9-1.9-7.4-1.9c-5.6 0-7.4 1.9-7.4 1.9S2 7.2 2 11v6.1c0 1.6 1.4 2.9 3.1 2.9 1.9 0 3.4-1.5 3.4-1.5l-.8-2.5c0 0 1.6.9 3.6.9 2 0 3.6-.9 3.6-.9l-.8 2.5s1.4 1.5 3.4 1.5C20.6 20 22 18.7 22 17.1V11c0-3.8-2-6.5-2-6.5z" fill="#aabbff"/></svg>
+          Discord
+        </button>
+        <button class="contact-btn" id="emailBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6.5v11c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-11" stroke="#dfe7ff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 6 12 13 3 6" stroke="#dfe7ff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Email
+        </button>
+        <div class="contact-meta">Discord userid: <strong>1407608147698516012</strong></div>
+        <div class="contact-meta">Email: <strong>waylontheevident@gmail.com</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="panel">
+      <div class="about-title">My Work</div>
+      <div class="work-grid">
+        <div class="card">Coming Soon</div>
+        <div class="card">Coming Soon</div>
+        <div class="card">Coming Soon</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h3 style="margin-bottom:8px">Discord</h3>
+    <p style="color:#bfc8d6;margin-bottom:12px">Click to open the profile or use the ID below.</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <a id="discordLink" href="https://discord.com/users/1407608147698516012" target="_blank" rel="noopener" class="contact-btn" style="padding:10px 12px">Open Discord Profile</a>
+      <div style="background:#0b1220;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);color:#cbd6ff">ID: 1407608147698516012</div>
+    </div>
+  </div>
 </div>
+
+<script>
+  var flash = document.getElementById('flash');
+  var nameEl = document.getElementById('name');
+  var sub = document.getElementById('sub');
+  var intro = document.getElementById('intro');
+  var nav = document.getElementById('nav');
+  var topBanner = document.getElementById('topBanner');
+  var contactGrid = document.getElementById('contactGrid');
+  var modal = document.getElementById('modal');
+  var discordBtn = document.getElementById('discordBtn');
+  var emailBtn = document.getElementById('emailBtn');
+  var modalClose = document.getElementById('modalClose');
+  var s1 = document.getElementById('s1');
+  var s2 = document.getElementById('s2');
+  var s3 = document.getElementById('s3');
+
+  anime({
+    targets: flash,
+    rotate: [ '0deg', '90deg' ],
+    easing: 'linear',
+    duration: 2000,
+    complete: function(){ anime({targets:flash, opacity:0, duration:400, easing:'linear'}); }
+  });
+
+  anime.timeline({delay:1600})
+    .add({targets:nameEl,opacity:[0,1],scale:[0.86,1],duration:800,easing:'easeOutExpo'})
+    .add({targets:sub,opacity:[0,1],translateY:[8,0],duration:700,easing:'easeOutExpo'},'-=420')
+    .add({targets:nameEl,opacity:[1,0],scale:[1,1.18],duration:900,easing:'easeInExpo'},1200)
+    .add({complete:function(){ intro.style.display='none'; document.body.classList.add('intro-done'); }} , 200);
+
+  anime({targets:s1,translateX:[0,-400],duration:22000,easing:'linear',loop:true});
+  anime({targets:s2,translateX:[0,-220],duration:32000,easing:'linear',loop:true});
+  anime({targets:s3,translateX:[0,-80],duration:42000,easing:'linear',loop:true});
+
+  var buttons = document.querySelectorAll('.nav button');
+  buttons.forEach(function(b){ b.addEventListener('click',function(){
+    var t=document.getElementById(b.dataset.target);
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+    buttons.forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  })});
+
+  var about = document.getElementById('about');
+  var contact = document.getElementById('contact');
+  var ioOptions={root:null,threshold:0.18};
+  var aboutSeen=false;
+  var contactSeen=false;
+
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.target.id==='about' && e.isIntersecting && !aboutSeen){
+        aboutSeen=true;
+        setTimeout(function(){
+          anime({targets:topBanner,translateY:[-76,8],opacity:[0,1],duration:650,easing:'spring(1,80,10,0)'});
+          setTimeout(function(){ anime({targets:topBanner,translateY:[8,0],duration:300,easing:'easeOutQuad'}); },600);
+        },500);
+      }
+      if(e.target.id==='contact' && e.isIntersecting && !contactSeen){
+        contactSeen=true;
+        setTimeout(function(){
+          anime({targets:contactGrid,translateY:[16,0],opacity:[0,1],duration:700,easing:'easeOutCubic'});
+        },5000);
+      }
+    });
+  },ioOptions);
+
+  observer.observe(about);
+  observer.observe(contact);
+
+  discordBtn.addEventListener('click',function(){
+    modal.classList.add('show');
+  });
+  modalClose.addEventListener('click',function(){ modal.classList.remove('show'); });
+  emailBtn.addEventListener('click',function(){
+    window.location.href='mailto:waylontheevident@gmail.com?subject=Contact';
+  });
+
+  document.addEventListener('scroll',function(){
+    var y = window.scrollY;
+    var hdr = document.querySelector('header');
+    if(y>24){ hdr.style.backdropFilter='blur(10px)'; hdr.style.background='linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00))' } else { hdr.style.backdropFilter=''; hdr.style.background='none' }
+  });
+</script>
 </body>
 </html>
